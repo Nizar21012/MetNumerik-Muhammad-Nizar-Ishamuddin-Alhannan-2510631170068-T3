@@ -1,43 +1,53 @@
 #include <iostream>
 using namespace std;
 
-// Fungsi yang dicari akarnya
 double f(double x) {
-    return x * x * x - 2 * x - 5;   // contoh: f(x) = x^3 - 2x - 5
+    return x * x * x - 2 * x - 5;
 }
 
-int main() {
-    double a = 2.0, b = 3.0;   // interval awal
-    double tol = 1e-6;          // toleransi
-    int maxIter = 100;           // maksimum iterasi
-
-    // Tampilkan informasi awal
-    cout << "Metode Bisection\n";
-    cout << "Fungsi: f(x) = x^3 - 2x - 5\n";
-    cout << "Interval: [" << a << ", " << b << "]\n";
-    cout << "Toleransi: " << tol << "\n\n";
-
-    // Cek syarat interval
+void bisection(double a, double b, double tol) {
     if (f(a) * f(b) >= 0) {
-        cout << "Error: f(a) dan f(b) harus berbeda tanda.\n";
-        return 1;
+        cout << "Interval tidak valid (f(a) dan f(b) harus berbeda tanda)" << endl;
+        return;
     }
 
-    cout << "Iterasi\t\tc\n";   // Header 2 kolom
-    cout << "----------------\n";
-
-    int iter = 0;
     double c;
+    int iter = 0;
+
+    cout.precision(8);
+    cout.setf(ios::fixed, ios::floatfield);
+
+    cout.width(5);  cout << "Iter";
+    cout.width(15); cout << "a";
+    cout.width(15); cout << "b";
+    cout.width(15); cout << "c";
+    cout.width(15); cout << "f(c)";
+    cout.width(15); cout << "Error" << endl;
+
+    for (int i = 0; i < 80; i++) cout << "-";
+    cout << endl;
 
     do {
-        c = (a + b) / 2.0;
+        c = (a + b) / 2;
         double fc = f(c);
-        double error = (b - a) / 2.0;
+        double error = (b - a) / 2;
 
-        // Cetak iterasi dan nilai c (2 kolom)
-        cout << iter << "\t\t" << c << "\n";
+        cout.width(5);  cout << iter;
+        cout.width(15); cout << a;
+        cout.width(15); cout << b;
+        cout.width(15); cout << c;
+        cout.width(15); cout << fc;
 
-        if (fc == 0.0 || error < tol) break;
+        cout.unsetf(ios::fixed);
+        cout.setf(ios::scientific, ios::floatfield);
+        cout.precision(2);
+        cout.width(15); cout << error << endl;
+
+        cout.unsetf(ios::scientific);
+        cout.setf(ios::fixed, ios::floatfield);
+        cout.precision(8);
+
+        if (fc == 0 || error < tol) break;
 
         if (f(a) * fc < 0)
             b = c;
@@ -45,11 +55,18 @@ int main() {
             a = c;
 
         iter++;
-    } while (iter < maxIter);
+    } while (iter < 100);
 
-    cout << "----------------\n";
-    cout << "Akar hampiran: " << c << "\n";
-    cout << "Jumlah iterasi: " << iter << "\n";
+    cout << "\nAkar hampiran = " << c << endl;
+}
+
+int main() {
+    double a = 2.0, b = 3.0;
+    double tol = 1e-6;
+
+    cout << "Mencari akar f(x) = x^3 - 2x - 5 pada interval [" << a << ", " << b << "]" << endl;
+    cout << "Toleransi = " << tol << "\n\n";
+    bisection(a, b, tol);
 
     return 0;
 }
